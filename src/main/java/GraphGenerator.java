@@ -9,7 +9,9 @@ import java.time.Instant;
 public class GraphGenerator {
 
     private SimpleWeightedGraph<String, DefaultWeightedEdge> citiesGraph;
-    private double totalPossiblePaths = 0.0;
+    private final int N = 1000;
+    private final String[] cities = new String[N];
+    //private double totalPossiblePaths = 0.0;
 
 
     private void addToGraph(String city, String anotherCity, double distance) {
@@ -28,46 +30,27 @@ public class GraphGenerator {
     //"
 
     public void generateCitiesGraph() {
-        String[] citiesList = {"Santa Maria", "Julio de Castilhos", "Santa Cruz do Sul", "Santiago", "São Gabriel", "São Vicente do Sul", "Cachoeira do Sul", "Rosário do Sul", "Cacequi", "Caçapava do Sul", "Três de Maio", "Alegrete", "Santana do Livramento", "Quaraí", "Dom Pedrito", "Uruguaiana", "São Francisco de Assis", "Barra do Quaraí", "Itaqui", "Porto Alegre", "Rio Grande", "Pelotas", "Gramado", "Canela"};
-        int min = 60;
-        int max = 250;
-        for (int i = 0; i < citiesList.length; i++) {
-            for (int j = 0; j < citiesList.length; j++) {
-                double distance = Math.floor(Math.random() * (max - min + 1) + min);
-                totalPossiblePaths += distance;
-                this.addToGraph(citiesList[i], citiesList[j], distance);
+        for(int i = 0; i < N; i++)
+        {
+            cities[i] = Integer.toString(i);
+        }
+        generate(cities);
+    }
+
+
+    private void generate(String[] cities) {
+        for (String cityOne : cities) {
+            for (String cityTwo : cities) {
+                double distance = Math.floor(Math.random() * (250 - 60 + 1) + 60);
+                //totalPossiblePaths += distance;
+                this.addToGraph(cityOne, cityTwo, distance);
             }
         }
     }
 
+
     public void printGraph() {
         System.out.println(citiesGraph.toString());
-    }
-
-    /**
-     * method: Dynamic Programming
-     * complexity: O(2^v x v)
-     **/
-    public void applyHeldKarp() {
-        Instant start = Instant.now();
-        HeldKarpTSP<String, DefaultWeightedEdge> heldKarpTSP = new HeldKarpTSP<>();
-        printResult(heldKarpTSP.getTour(this.citiesGraph), "heldKarpTSP");
-        Instant finish = Instant.now();
-        System.out.println("Time: " + Duration.between(start, finish)
-                .toMillis() + "ms");
-    }
-
-    /**
-     * method: Minimum Spanning Three (Greedy)
-     * complexity: V^2logV
-     **/
-    public void applyTwoApproxMetric() {
-        Instant start = Instant.now();
-        TwoApproxMetricTSP<String, DefaultWeightedEdge> twoApproxMetricTSP = new TwoApproxMetricTSP<>();
-        printResult(twoApproxMetricTSP.getTour(this.citiesGraph), "twoApproxMetricTSP");
-        Instant finish = Instant.now();
-        System.out.println("Time: " + Duration.between(start, finish)
-                .toMillis() + "ms");
     }
 
     /**
@@ -96,32 +79,20 @@ public class GraphGenerator {
                 .toMillis() + "ms");
     }
 
-    /**
-     * method: NI
-     * complexity: V^2
-     **/
-    public void applyNearestInsertion() {
-        Instant start = Instant.now();
-        NearestInsertionHeuristicTSP<String, DefaultWeightedEdge> nearestInsertionHeuristicTSP =
-                new NearestInsertionHeuristicTSP<>();
-        printResult(nearestInsertionHeuristicTSP.getTour(this.citiesGraph), "nearestInsertionHeuristicTSP");
-        Instant finish = Instant.now();
-        System.out.println("Time: " + Duration.between(start, finish)
-                .toMillis() + "ms");
-    }
 
     /**
      * method: NN
      * complexity: V^2
      **/
     public void applyNearestNeighbour() {
-            Instant start = Instant.now();
-            NearestNeighborHeuristicTSP<String, DefaultWeightedEdge> nearestNeighborHeuristicTSP =
-                    new NearestNeighborHeuristicTSP<>();
-            printResult(nearestNeighborHeuristicTSP.getTour(this.citiesGraph), "nearestNeighborHeuristicTSP");
-            Instant finish = Instant.now();
-            System.out.println("Time: " + Duration.between(start, finish)
-                    .toMillis() + "ms");
+        Instant start = Instant.now();
+        NearestNeighborHeuristicTSP<String, DefaultWeightedEdge> nearestNeighborHeuristicTSP =
+                new NearestNeighborHeuristicTSP<>();
+        printResult(nearestNeighborHeuristicTSP.getTour(this.citiesGraph),
+                "nearestNeighborHeuristicTSP");
+        Instant finish = Instant.now();
+        System.out.println("Time: " + Duration.between(start, finish)
+                .toMillis() + "ms");
     }
 
     /**
@@ -129,34 +100,40 @@ public class GraphGenerator {
      * complexity: V^2
      **/
     public void applyChristofidesThreeHalvesApproxMetricTSP() {
-            Instant start = Instant.now();
-            ChristofidesThreeHalvesApproxMetricTSP<String, DefaultWeightedEdge>
-                    christofidesThreeHalvesApproxMetricTSP =
-                    new ChristofidesThreeHalvesApproxMetricTSP<>();
-            printResult(christofidesThreeHalvesApproxMetricTSP.getTour(this.citiesGraph), "christofidesThreeHalvesApproxMetricTSP");
-            Instant finish = Instant.now();
-            System.out.println("Time: " + Duration.between(start, finish)
-                    .toMillis() + "ms");
+        Instant start = Instant.now();
+        ChristofidesThreeHalvesApproxMetricTSP<String, DefaultWeightedEdge>
+                christofidesThreeHalvesApproxMetricTSP =
+                new ChristofidesThreeHalvesApproxMetricTSP<>();
+        printResult(christofidesThreeHalvesApproxMetricTSP.getTour(this.citiesGraph),
+                "christofidesThreeHalvesApproxMetricTSP");
+        Instant finish = Instant.now();
+        System.out.println("Time: " + Duration.between(start, finish)
+                .toMillis() + "ms");
     }
 
-    public void applyTwoOptHeuristicTSP() {
-         Instant start = Instant.now();
-         TwoOptHeuristicTSP<String, DefaultWeightedEdge>
-                 twoOptHeuristicTSP =
-                 new TwoOptHeuristicTSP<>(new NearestNeighborHeuristicTSP<>());
-         printResult(twoOptHeuristicTSP.getTour(this.citiesGraph), "twoOptHeuristicTSP");
-         Instant finish = Instant.now();
-         System.out.println("Time: " + Duration.between(start, finish)
-                 .toMillis() + "ms");
-    }
 
+    public void run() {
+        this.generateCitiesGraph();
+        System.out.println("INPUT SIZE: " + N);
+        this.applyRandomTour();
+        this.applyChristofidesThreeHalvesApproxMetricTSP();
+        this.applyGreedyHeuristic();
+        this.applyNearestNeighbour();
+
+        for (int i = 0; i < N-(N/10); i++) {
+            this.citiesGraph.removeVertex(cities[i]);
+        }
+
+        System.out.println("\nINPUT SIZE: " + (N/10));
+        this.applyRandomTour();
+        this.applyChristofidesThreeHalvesApproxMetricTSP();
+        this.applyGreedyHeuristic();
+        this.applyNearestNeighbour();
+    }
 
     private void printResult(GraphPath<String, DefaultWeightedEdge> graphPath, String method) {
         System.out.println("Método: " + method);
-        System.out.println("O grafo tem distancia linear total de: " + totalPossiblePaths + "KM");
         System.out.println(
                 "O menor percurso é de aproximadamente: " + graphPath.getWeight() + "KM");
-        System.out.printf("O custo de gasolina é de: %.2f R$\n",
-                (graphPath.getWeight() / 12) * 6.66);
     }
 }
