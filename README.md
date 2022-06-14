@@ -1,2 +1,2 @@
 # OCA-TSP
-### Este é um trabalho da disciplima de otimização e complexidade de algoritmos.
+### Este é um trabalho da disciplina de otimização e complexidade de algoritmos.
